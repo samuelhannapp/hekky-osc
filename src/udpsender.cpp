@@ -158,7 +158,7 @@ namespace hekky {
             sendto(m_nativeSocket, data, size, 0, (sockaddr*)&m_destinationAddress, sizeof(m_destinationAddress));
 #endif
 #if defined(HEKKYOSC_LINUX) || defined(HEKKYOSC_MAC)
-sendto (m_nativeSocket, data, size, 0, (struct sockaddr *) &m_destinationAddress, sizeof (m_destinationAddress));
+			sendto (m_nativeSocket, data, size, 0, (struct sockaddr *) &m_destinationAddress, sizeof (m_destinationAddress)); //thats exactly the same, we should get rid of that one
 #endif
         }
 
