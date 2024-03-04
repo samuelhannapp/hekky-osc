@@ -77,6 +77,8 @@ namespace hekky {
 			/// <param name="message">The OSC packet to send</param>
 			void Send(OscPacket& message);
 
+			hekky::osc::OscMessage Receive();
+
 			/// <summary>
 			/// Returns whether the server is alive or not
 			/// </summary>

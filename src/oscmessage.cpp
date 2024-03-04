@@ -12,6 +12,16 @@ namespace hekky {
 			HEKKYOSC_ASSERT(address[0] == '/', "The address is invalid! It should start with a '/'!");
 			m_data.reserve(constants::OSC_MINIMUM_PACKET_BYTES);
 		}
+		OscMessage::OscMessage(char* buffer, int buffer_length)
+		{
+			//HEKKYOSC_ASSERT(address.length() > 1, "The address is invalid!");
+			//HEKKYOSC_ASSERT(address[0] == '/', "The address is invalid! It should start with a '/'!");
+			m_address = std::string(buffer);
+			m_type = get_type_list(buffer, buffer_length);
+			m_structure = get_variables(buffer, buffer_length);
+			m_readonly = false;
+			
+		}
 
 		OscMessage::~OscMessage() {
 			m_data.clear();
@@ -264,5 +274,121 @@ namespace hekky {
 			size = static_cast<int>(m_data.size());
 			return m_data.data();
 		}
+
+		std::string OscMessage::get_type_list(char* buffer, int buffer_length)
+		{
+			int ctr = 0;
+			std::string ret;
+			while (ctr++ < buffer_length) {
+				if (*buffer++ == ',')
+					break;
+			}
+			while (ctr++ < buffer_length) {
+				if (*buffer != '\0')
+					ret.push_back(*buffer++);
+				else
+					break;
+			}
+			return ret;
+		}
+
+		std::vector<std::variant<int, float, double, std::string>> OscMessage::get_variables(char* buffer, int buffer_length)
+		{
+			std::string type_list;
+			type_list = get_type_list(buffer, buffer_length);
+
+			int data_start_point = 0;
+			data_start_point = get_data_start_point(buffer, buffer_length);
+
+			std::vector<std::variant<int, float, double, std::string>> list;
+
+			int ctr = data_start_point;
+
+			for (int i = 0; i < type_list.size(); i++) {
+				switch (type_list[i]) {
+				case 'i':
+					list.push_back(get_int(buffer, &ctr));
+					break;
+				case 'f':
+					list.push_back(get_float((unsigned char*)buffer, &ctr));
+					break;
+				case 's':
+					list.push_back(get_string(buffer, &ctr));
+					break;
+				case 'd':
+					list.push_back(get_double((unsigned char*)buffer, &ctr));
+					break;
+				default:
+					break;
+				}
+			}
+			return list;
+		}
+		int OscMessage::get_data_start_point(char* buffer, int buffer_size)
+		{
+			int i = 0;
+			while (buffer[i] != ',')
+				i++;
+			while (buffer[i] != '\0')
+				i++;
+			//we found the closing '\0' after the string, now lets go one further...
+			i++;
+			while ((i % 4) != 0)
+				i++;
+			return i;
+		}
+		int OscMessage::get_int(char* buffer, int* ctr)
+		{
+			int ret = 0;
+			for (int i = 0; i < sizeof(int); i++) {
+				ret |= ((buffer[(*ctr)++]) << (24 - (i * 8)));
+			}
+			return ret;
+		}
+
+		float OscMessage::get_float(unsigned char* buffer, int* ctr)
+		{
+			unsigned int temp_ret = 0;
+			//for (int i = 0; i < sizeof(float); i++) {
+		//		temp_ret |= ((buffer[(*ctr)++]) << (/*24 - */(i * 8)));
+		//	}
+			unsigned char byte_array[4];
+			for (int i = 0; i < 4; i++)
+			{
+				byte_array[4 - (i + 1)] = buffer[*ctr + i];
+			}
+			float ret = 0;
+			memcpy(&ret, byte_array, sizeof(float));
+			*ctr += sizeof(float);
+			return ret;
+		}
+
+		std::string OscMessage::get_string(char* buffer, int* ctr)
+		{
+			std::string ret;
+			while (buffer[*ctr] != '\0')
+				ret.push_back(buffer[(*ctr)++]);
+			//we found the closing '\0', now let's go one further
+			(*ctr)++;
+			while (*ctr % sizeof(int) != 0)
+				(*ctr)++;
+
+			return ret;
+		}
+
+		double OscMessage::get_double(unsigned char* buffer, int* ctr)
+		{
+			long long unsigned int ret = 0;
+			unsigned char byte_array[8];
+			for (int i = 0; i < sizeof(double); i++)
+			{
+				byte_array[8 - (i + 1)] = *(buffer + (*ctr + i));
+			}
+
+			double val = 0;
+			memcpy(&val, byte_array, sizeof(double));
+			return val;
+		}
+		
 	}
 }

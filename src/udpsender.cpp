@@ -172,5 +172,17 @@ namespace hekky {
             // Send data over the socket
             Send(data, size);
         }
+
+		hekky::osc::OscMessage  UdpSender::Receive() {
+			char buffer[1024]; 
+			int buffer_length = 1024;
+			int res = 0;
+			struct sockaddr_in sender_address;
+			int sender_address_size = sizeof(sender_address);
+			res = recvfrom(m_nativeSocket, buffer, buffer_length, 0, (SOCKADDR*)&sender_address, &sender_address_size);
+			std::cout << buffer<<"\n";
+			auto message = hekky::osc::OscMessage(buffer, buffer_length);
+			return message;
+		}
     }
 }
