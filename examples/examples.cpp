@@ -47,7 +47,7 @@ int main()
 
 	while (1) {
 		auto receive_message = udpSender.Receive();
-		process_message(receive_message);
+		//process_message(receive_message);
 	}
 
 
@@ -63,50 +63,50 @@ int main()
 void process_message(hekky::osc::OscMessage in) {
 	if (!in.GetAddress().compare(0, 6, "/strip")) {
 		if (!in.GetAddress().compare(0, 13, "/strip/fader\0"))
-			Sleep(1);
+			sleep(1);
 			//return strip_fader;
 		if (!in.GetAddress().compare("/strip/plugin/descriptor"))
-			Sleep(1);
+			sleep(1);
 			//return strip_plugin_descriptor;
 		if (!in.GetAddress().compare("/strip/plugin/descriptor_end"))
-			Sleep(1);
+			sleep(1);
 			//return strip_plugin_descriptor_end;
 		if (!in.GetAddress().compare("/strip/plugin/list"))
-			Sleep(1);
+			sleep(1);
 			//return strip_plugin_list;
 		if (!in.GetAddress().compare("/strip/sends"))
-			Sleep(1);
+			sleep(1);
 			//return strip_sends;
 		if (!in.GetAddress().compare("/strip/name"))
-			Sleep(1);
+			sleep(1);
 			//return strip_name;
 		if (!in.GetAddress().compare("/strip/select"))
-			Sleep(1);
+			sleep(1);
 			//return strip_select;
 		if (!in.GetAddress().compare("/strip/mute"))
-			Sleep(1);
+			sleep(1);
 			//return strip_mute;
 		if (!in.GetAddress().compare("/strip/solo"))
-			Sleep(1);
+			sleep(1);
 			//return strip_solo;
 		if (!in.GetAddress().compare("/strip/recenable"))
-			Sleep(1);
+			sleep(1);
 			//return strip_recenable;
 		if (!in.GetAddress().compare("/strip/meter"))
-			Sleep(1);
+			sleep(1);
 			//return strip_meter;
 		if (!in.GetAddress().compare("/strip/pan_stereo_position"))
-			Sleep(1);
+			sleep(1);
 			//return strip_pan_stereo_position;
 
 	}
 	if (!in.GetAddress().compare(0, 7, "/select")) {
 		if (!in.GetAddress().compare("/select/plugin/parameter"))
-			Sleep(1);
+			sleep(1);
 			//return select_plugin_parameter;
 	}
 	if (!in.GetAddress().compare(0, 6, "#reply")) {
-		Sleep(1);
+		sleep(1);
 		//return reply;
 	}
 	//return unknown;

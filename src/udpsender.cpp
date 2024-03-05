@@ -93,7 +93,7 @@ namespace hekky {
             memcpy ( (char *) &m_destinationAddress.sin_addr.s_addr, h->h_addr_list[0], h->h_length);
             m_destinationAddress.sin_port = htons (m_portOut);
             // Open the network socket
-            m_nativeSocket = socket (AF_INET, SOCK_DGRAM, 0);
+            m_nativeSocket = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP);
             if (m_nativeSocket < 0) {
                 HEKKYOSC_ASSERT(result == SOCKET_ERROR, "Cannot open Socket!");
                 return;
@@ -102,7 +102,7 @@ namespace hekky {
             //Bind network socket
             m_localAddress.sin_family = AF_INET;
             m_localAddress.sin_addr.s_addr = htonl (INADDR_ANY);
-            m_localAddress.sin_port = htons (0);
+            m_localAddress.sin_port = htons (m_portIn);
             result = bind ( m_nativeSocket, (struct sockaddr *) &m_localAddress, sizeof (m_localAddress) );
             if (result < 0) {
                 HEKKYOSC_ASSERT(result == SOCKET_ERROR, "Failed to bind to network socket!");
@@ -179,7 +179,12 @@ namespace hekky {
 			int res = 0;
 			struct sockaddr_in sender_address;
 			int sender_address_size = sizeof(sender_address);
+#ifdef HEKKYOSC_WINDOWS
 			res = recvfrom(m_nativeSocket, buffer, buffer_length, 0, (SOCKADDR*)&sender_address, &sender_address_size);
+#endif
+#if defined(HEKKYOSC_LINUX) || defined(HEKKYOSC_MAC)
+            res = recvfrom(m_nativeSocket, buffer, buffer_length, 0, (struct sockaddr *)&sender_address, (socklen_t *)&sender_address_size);
+#endif
 			std::cout << buffer<<"\n";
 			auto message = hekky::osc::OscMessage(buffer, buffer_length);
 			return message;
