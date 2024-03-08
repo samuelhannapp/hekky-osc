@@ -54,6 +54,8 @@ namespace hekky {
 		class UdpSender {
 		public:
 			UdpSender();
+			UdpSender(UdpSender& in);
+			
 
 			/// <summary>
 			/// Opens a UDP socket connection.

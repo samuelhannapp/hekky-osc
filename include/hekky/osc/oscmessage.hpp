@@ -77,6 +77,8 @@ namespace hekky {
 			inline const std::string& GetAddress() const {
 				return m_address;
 			}
+			std::vector<std::variant<int, float, double, std::string>> get_data_structure();
+
 
 		private:
 			char* GetBytes(int& size);

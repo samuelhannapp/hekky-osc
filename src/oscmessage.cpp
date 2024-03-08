@@ -389,6 +389,10 @@ namespace hekky {
 			memcpy(&val, byte_array, sizeof(double));
 			return val;
 		}
+		std::vector<std::variant<int, float, double, std::string>> OscMessage::get_data_structure()
+		{
+			return m_structure;
+		}
 		
 	}
 }

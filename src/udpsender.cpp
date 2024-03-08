@@ -13,6 +13,18 @@ namespace hekky {
 #endif
         {}
 
+		UdpSender::UdpSender(UdpSender& in)
+		{
+			m_address = in.m_address;
+			m_destinationAddress = in.m_destinationAddress;
+			m_isAlive = in.m_isAlive;
+			m_localAddress = in.m_localAddress;
+			m_nativeSocket = in.m_nativeSocket;
+			m_openSockets = in.m_openSockets;
+			m_portIn = in.m_portIn;
+			m_portOut = in.m_portOut;
+		}
+
         UdpSender::UdpSender(const std::string& ipAddress, uint32_t portOut, uint32_t portIn, network::OSC_NetworkProtocol protocol)
             : m_address(ipAddress), m_portOut(portOut), m_portIn(portIn)
 #ifdef HEKKYOSC_WINDOWS
@@ -185,7 +197,7 @@ namespace hekky {
 #if defined(HEKKYOSC_LINUX) || defined(HEKKYOSC_MAC)
             res = recvfrom(m_nativeSocket, buffer, buffer_length, 0, (struct sockaddr *)&sender_address, (socklen_t *)&sender_address_size);
 #endif
-			std::cout << buffer<<"\n";
+			//std::cout << buffer<<"\n";//thats for debugging
 			auto message = hekky::osc::OscMessage(buffer, buffer_length);
 			return message;
 		}
