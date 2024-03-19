@@ -6,9 +6,7 @@
 #include "oscmessage.hpp"
 
 #include <string>
-
 #ifdef HEKKYOSC_WINDOWS
-
 // Winsock API
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -16,7 +14,6 @@
 
 // Tell the linker to link to the winsock library
 #pragma comment(lib, "Ws2_32.lib")
-
 #endif
 
 #if defined(HEKKYOSC_LINUX) || defined(HEKKYOSC_MAC)
@@ -85,7 +82,6 @@ namespace hekky {
 			/// Returns whether the server is alive or not
 			/// </summary>
 			const bool IsAlive();
-		private:
 			/// <summary>
 			/// Sends a buffer of data over this UDP socket.
 			/// </summary>
